@@ -1,38 +1,97 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Latihan Individu</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f8fa;
+            margin: 30px;
+            color: #333;
+        }
+
+        h1, h2 {
+            color: #263849;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #258fbd;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f0f4f6;
+        }
+
+        .mengulang {
+            background-color: #ffcccc !important;
+            color: #b30000;
+        }
+
+        .ringkasan {
+            background-color: white;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .ringkasan p {
+            margin: 10px 0;
+        }
+
+        .hasil {
+            font-weight: bold;
+            color: #258fbd;
+        }
+    </style>
 </head>
+
 <body>
 
     <h1>Perhitungan Nilai dan IPS Mahasiswa</h1>
+    <h2>Daftar Hasil Studi Semester 2025/2026 Genap</h2>
 
     <?php
     $matkul = [
-        ["nama" => "Matematika Diskrit", "sks" => 3, "nilai" => 66.9],
-        ["nama" => "Teknologi dan Transformasi Digital", "sks" => 2, "nilai" => 89.85],
-        ["nama" => "Kalkulus", "sks" => 3, "nilai" => 92],
-        ["nama" => "Dasar Dasar Pemrograman", "sks" => 2, "nilai" => 87],
-        ["nama" => "Algoritma dan Pemrograman", "sks" => 4, "nilai" => 87.5],
-        ["nama" => "Pendidikan Agama", "sks" => 2, "nilai" => 88.45],
-        ["nama" => "Bahasa Pemrograman I", "sks" => 2, "nilai" => 88],
-        ["nama" => "Sistem Digital", "sks" => 2, "nilai" => 96.25]
+        ["nama" => "Aljabar Linier", "sks" => 2, "nilai" => 81.4],
+        ["nama" => "Probabilitas dan Statistika", "sks" => 3, "nilai" => 44.05],
+        ["nama" => "Struktur Data", "sks" => 3, "nilai" => 85],
+        ["nama" => "Arsitektur dan Organisasi Komputer", "sks" => 3, "nilai" => 94.2],
+        ["nama" => "Komunikasi Data", "sks" => 2, "nilai" => 45.75],
+        ["nama" => "Moderasi Beragama", "sks" => 2, "nilai" => 90.9],
+        ["nama" => "Pengantar Teknologi Internet", "sks" => 3, "nilai" => 85.25],
+        ["nama" => "Bahasa Pemrograman II", "sks" => 2, "nilai" => 90]
     ];
 
     function hitungBobot($nilai) {
         if ($nilai >= 80) {
-            return ["huruf" => "A", "bobot" => 4];
+            return ["huruf" => "A", "bobot" => 4.0];
         } elseif ($nilai >= 70) {
-            return ["huruf" => "B", "bobot" => 3];
+            return ["huruf" => "B", "bobot" => 3.0];
         } elseif ($nilai >= 60) {
-            return ["huruf" => "C", "bobot" => 2];
+            return ["huruf" => "C", "bobot" => 2.0];
         } elseif ($nilai >= 50) {
-            return ["huruf" => "D", "bobot" => 1];
+            return ["huruf" => "D", "bobot" => 1.0];
         } else {
-            return ["huruf" => "E", "bobot" => 0];
+            return ["huruf" => "E", "bobot" => 0.0];
         }
     }
 
@@ -42,11 +101,11 @@
     $jumlahMengulang = 0;
     ?>
 
-    <h2>Data Nilai Mata Kuliah</h2>
+    <h2>Daftar Nilai Mata Kuliah</h2>
 
-    <table border="1" cellpadding="8" cellspacing="0">
+    <table>
         <tr>
-            <th>No</th>
+            <th>No.</th>
             <th>Nama Mata Kuliah</th>
             <th>SKS</th>
             <th>Nilai Angka</th>
@@ -59,7 +118,7 @@
         foreach ($matkul as $index => $data) {
             $hasil = hitungBobot($data["nilai"]);
 
-            $status = $hasil["bobot"] >= 2 ? "LULUS" : "MENGULANG";
+            $status = $hasil["bobot"] >= 2.0 ? "LULUS" : "MENGULANG";
 
             $totalSKS += $data["sks"];
             $totalBobot += $data["sks"] * $hasil["bobot"];
@@ -70,7 +129,9 @@
                 $jumlahMengulang++;
             }
 
-            echo "<tr>";
+            $class = $status == "MENGULANG" ? "mengulang" : "";
+
+            echo "<tr class='$class'>";
             echo "<td>" . ($index + 1) . "</td>";
             echo "<td>" . htmlspecialchars($data["nama"]) . "</td>";
             echo "<td>" . $data["sks"] . "</td>";
@@ -82,59 +143,37 @@
         }
 
         $ips = $totalSKS > 0 ? $totalBobot / $totalSKS : 0;
-        $maksimalSKS = $ips >= 3.00 ? 24 : 20;
+
+        if ($ips >= 3.00) {
+            $maksimalSKS = 24;
+        } else {
+            $maksimalSKS = 20;
+        }
         ?>
+
     </table>
 
-    <h2>Ringkasan Hasil Perhitungan</h2>
+    <div class="ringkasan">
+        <h2>Ringkasan Hasil Perhitungan</h2>
 
-    <?php
-    echo "Total Mata Kuliah: " . count($matkul) . "<br>";
-    echo "Total SKS: " . $totalSKS . "<br>";
-    echo "Jumlah Mata Kuliah Lulus: " . $jumlahLulus . "<br>";
-    echo "Jumlah Mata Kuliah Mengulang: " . $jumlahMengulang . "<br>";
-    echo "Total Bobot Nilai: " . number_format($totalBobot, 2) . "<br>";
-    echo "Indeks Prestasi Semester (IPS): " . number_format($ips, 2) . "<br>";
-    echo "Batas Maksimal SKS Semester Depan: " . $maksimalSKS . " SKS";
-    ?>
+        <p>Total Mata Kuliah: <strong><?php echo count($matkul); ?></strong></p>
 
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
+        <p>Total SKS: <strong><?php echo $totalSKS; ?> SKS</strong></p>
+
+        <p>Jumlah Mata Kuliah Lulus: <strong><?php echo $jumlahLulus; ?></strong></p>
+
+        <p>Jumlah Mata Kuliah Mengulang: <strong><?php echo $jumlahMengulang; ?></strong></p>
+
+        <p>Total Bobot Nilai: <strong><?php echo number_format($totalBobot, 2); ?></strong></p>
+
+        <p>Indeks Prestasi Semester (IPS):
+            <strong class="hasil"><?php echo number_format($ips, 2); ?></strong>
+        </p>
+
+        <p>Batas Maksimal SKS Semester Depan:
+            <strong class="hasil"><?php echo $maksimalSKS; ?> SKS</strong>
+        </p>
+    </div>
+
 </body>
 </html>
